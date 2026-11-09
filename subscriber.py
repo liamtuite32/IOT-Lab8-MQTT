@@ -1,0 +1,49 @@
+# Lab 8: Subscriber
+# Liam Tuite - c21447352
+# Oisin Kiely - c21501436
+# Providence Obiozor - c20499732
+
+import network
+import machine
+import time
+from umqtt.simple import MQTTClient
+
+# WiFi and MQTT Broker Configuration
+WIFI_NAME= "Liam"
+WIFI_PASSWORD= "IOT_LAB6967"
+BROKER_IP = "Raspberry Pi IP Address" # Fill In On Thursday
+
+led = machine.Pin(15, machine.Pin.OUT)  
+led.value(0) 
+
+def received_message(topic, message):
+    temperature = float(message.decode())
+    print("Received temperature:", temperature)
+
+    if temperature >= 25:
+        led.value(1)
+        print("LED ON - Temperature is above or equal to 25°C")
+    else:
+        led.value(0)
+        print("LED OFF - Temperature is below 25°C")
+
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)   
+wlan.connect(WIFI_NAME, WIFI_PASSWORD)
+
+while not wlan.isconnected():
+    print("Connecting to WiFi...")
+    time.sleep(1)
+
+print("Connected to WiFi. IP Address:", wlan.ifconfig()[0])
+
+client = MQTTClient("subscriber", BROKER_IP)
+client.set_callback(received_message)
+client.connect()
+client.subscribe(b"temperature/pico")
+
+print("Subscribed to topic: temperature/pico")
+
+while True:
+    client.check_msg()  
+    time.sleep(0.1)  
