@@ -8,10 +8,10 @@ import machine
 import time
 from umqtt.simple import MQTTClient
 
-# WiFi and MQTT Broker Configuration
-WIFI_NAME= "Liam"
-WIFI_PASSWORD= "IOT_LAB6967"
-BROKER_IP = "Raspberry Pi IP Address" # Fill In On Thursday
+# WiFi and MQTT Broker Configuration - Fill with correct details
+WIFI_NAME= "WIFI"
+WIFI_PASSWORD= "PASSWORD"
+BROKER_IP = "IP_ADDRESS"
 
 led = machine.Pin(15, machine.Pin.OUT)  
 led.value(0) 
